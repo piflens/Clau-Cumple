@@ -87,13 +87,13 @@
 <body>
 
     <canvas id="canvas-luces"></canvas>
-<audio id="musicaFondo" loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-</audio>
+<div id="contenedorYoutube" style="position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0;">
+        <iframe id="reproductorYoutube" src="https://www.youtube.com/embed/GkEjCynfk_E?enablejsapi=1&loop=1&playlist=GkEjCynfk_E" allow="autoplay"></iframe>
+    </div>
 
-<button id="btnMusica" style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: rgba(251, 191, 36, 0.2); border: 1px solid #fbbf24; color: #fbbf24; padding: 10px 15px; border-radius: 20px; cursor: pointer; font-family: sans-serif; font-size: 14px; backdrop-filter: blur(5px); transition: all 0.3s;">
-    🎵 Play Música
-</button>
+    <button id="btnMusica" style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: rgba(251, 191, 36, 0.2); border: 1px solid #fbbf24; color: #fbbf24; padding: 10px 15px; border-radius: 20px; cursor: pointer; font-family: sans-serif; font-size: 14px; backdrop-filter: blur(5px); transition: all 0.3s;">
+        🎵 Play Música
+    </button>
     <div class="carta">
         <h1>¡Muy Feliz Cumpleaños, Clau!</h1>
         
@@ -185,19 +185,18 @@
 
         iniciar();
         animar();
-        const musica = document.getElementById('musicaFondo');
+        let tocando = false;
         const btnMusica = document.getElementById('btnMusica');
+        const iframe = document.getElementById('reproductorYoutube');
 
         btnMusica.addEventListener('click', () => {
-            if (musica.paused) {
-                musica.play();
-                btnMusica.innerHTML = '⏸ Pausar';
-                btnMusica.style.background = 'rgba(251, 191, 36, 0.4)';
-            } else {
-                musica.pause();
-                btnMusica.innerHTML = '🎵 Play Música';
-                btnMusica.style.background = 'rgba(251, 191, 36, 0.2)';
-            }
+            const comando = tocando ? '{"event":"command","func":"pauseVideo","args":""}' : '{"event":"command","func":"playVideo","args":""}';
+            iframe.contentWindow.postMessage(comando, '*');
+            
+            tocando = !tocando;
+            btnMusica.innerHTML = tocando ? '⏸ Pausar' : '🎵 Play Música';
+            btnMusica.style.background = tocando ? 'rgba(251, 191, 36, 0.4)' : 'rgba(251, 191, 36, 0.2)';
+        });
         });
     </script>
 </body>
